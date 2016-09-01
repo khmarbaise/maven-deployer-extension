@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.soebes.smpp</groupId>
+    <artifactId>smpp-plugins</artifactId>
+    <version>2.2.1</version>
+  </parent>
+
+  <groupId>com.soebes.maven.extensions</groupId>
+  <artifactId>maven-installer-extension</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <packaging>maven-plugin</packaging>
+
+  <name>The Artifactor Maven Plugin.</name>
+  <description> of elements.</description>
+
+  <prerequisites>
+    <maven>${maven.version}</maven>
+  </prerequisites>
+
+
+  <properties>
+    <smpp.component>maven-installer-extension</smpp.component>
+  </properties>
+
+  <!-- Must be overwritten in every project. -->
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/khmarbaise/maven-installer-extension/issues</url>
+  </issueManagement>
+
+  <scm>
+    <developerConnection>scm:git:ssh://git@github.com/khmarbaise/maven-installer-extension.git</developerConnection>
+    <connection>scm:git:https://github.com/khmarbaise/maven-installer-extension.git</connection>
+    <url>https://github.com/khmarbaise/maven-installer-extension/</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.5</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <id>generate-index</id>
+            <goals>
+              <goal>main-index</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>templating-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>filter-sources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
