@@ -1,5 +1,9 @@
 package com.soebes.maven.extensions.deployer;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -12,6 +16,7 @@ import org.apache.maven.project.DependencyResolutionRequest;
 import org.apache.maven.project.DependencyResolutionResult;
 import org.eclipse.aether.RepositoryEvent;
 import org.eclipse.aether.RepositoryEvent.EventType;
+import org.eclipse.aether.artifact.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +32,18 @@ public class InstallationCollector
 {
     private final Logger LOGGER = LoggerFactory.getLogger( getClass() );
 
+    private List<Artifact> installedArtifacts;
+
     @Inject
     public InstallationCollector()
     {
+        installedArtifacts = Collections.<Artifact>synchronizedList( new LinkedList<Artifact>() );
         LOGGER.debug( "Installation collector." );
+    }
+
+    public List<Artifact> getInstalledArtifacts()
+    {
+        return this.installedArtifacts;
     }
 
     @Override
@@ -39,11 +52,11 @@ public class InstallationCollector
     {
         super.init( context );
 
-        LOGGER.info( "    __  ___                          ____           __        ____             ______     __                  _");
-        LOGGER.info( "   /  |/  /___ __   _____  ____     /  _/___  _____/ /_____ _/ / /__  _____   / ____/  __/ /____  ____  _____(_)___  ____"); 
-        LOGGER.info( "  / /|_/ / __ `/ | / / _ \\/ __ \\    / // __ \\/ ___/ __/ __ `/ / / _ \\/ ___/  / __/ | |/_/ __/ _ \\/ __ \\/ ___/ / __ \\/ __ \\");
-        LOGGER.info( " / /  / / /_/ /| |/ /  __/ / / /  _/ // / / (__  ) /_/ /_/ / / /  __/ /     / /____>  </ /_/  __/ / / (__  ) / /_/ / / / /");
-        LOGGER.info( "/_/  /_/\\__,_/ |___/\\___/_/ /_/  /___/_/ /_/____/\\__/\\__,_/_/_/\\___/_/     /_____/_/|_|\\__/\\___/_/ /_/____/_/\\____/_/ /_/");
+        LOGGER.info( "    __  ___                          ____           __        ____             ______     __                  _" );
+        LOGGER.info( "   /  |/  /___ __   _____  ____     /  _/___  _____/ /_____ _/ / /__  _____   / ____/  __/ /____  ____  _____(_)___  ____" );
+        LOGGER.info( "  / /|_/ / __ `/ | / / _ \\/ __ \\    / // __ \\/ ___/ __/ __ `/ / / _ \\/ ___/  / __/ | |/_/ __/ _ \\/ __ \\/ ___/ / __ \\/ __ \\" );
+        LOGGER.info( " / /  / / /_/ /| |/ /  __/ / / /  _/ // / / (__  ) /_/ /_/ / / /  __/ /     / /____>  </ /_/  __/ / / (__  ) / /_/ / / / /" );
+        LOGGER.info( "/_/  /_/\\__,_/ |___/\\___/_/ /_/  /___/_/ /_/____/\\__/\\__,_/_/_/\\___/_/     /_____/_/|_|\\__/\\___/_/ /_/____/_/\\____/_/ /_/" );
     }
 
     @Override
@@ -157,6 +170,8 @@ public class InstallationCollector
             case ARTIFACT_INSTALLING:
                 break;
             case ARTIFACT_INSTALLED:
+                // repositoryEvent.getArtifact().
+                installedArtifacts.add( repositoryEvent.getArtifact() );
                 break;
 
             case METADATA_DEPLOYING:
@@ -201,6 +216,7 @@ public class InstallationCollector
                 break;
             case SessionEnded:
                 // Everything is done.
+                deployArtifacts();
                 break;
 
             case ForkStarted:
@@ -234,6 +250,15 @@ public class InstallationCollector
             default:
                 LOGGER.error( "MBTP: executionEventHandler: {}", type );
                 break;
+        }
+
+    }
+
+    private void deployArtifacts()
+    {
+        for ( Artifact itemToDeploy : this.getInstalledArtifacts() )
+        {
+            LOGGER.info( "Deploy: " + itemToDeploy.toString() );
         }
 
     }
