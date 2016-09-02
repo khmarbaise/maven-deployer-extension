@@ -38,7 +38,7 @@ public class InstallationCollector
     public InstallationCollector()
     {
         installedArtifacts = Collections.<Artifact>synchronizedList( new LinkedList<Artifact>() );
-        LOGGER.debug( "Installation collector." );
+//        LOGGER.info( "Installation collector." );
     }
 
     public List<Artifact> getInstalledArtifacts()
@@ -51,12 +51,6 @@ public class InstallationCollector
         throws Exception
     {
         super.init( context );
-
-        LOGGER.info( "    __  ___                          ____           __        ____             ______     __                  _" );
-        LOGGER.info( "   /  |/  /___ __   _____  ____     /  _/___  _____/ /_____ _/ / /__  _____   / ____/  __/ /____  ____  _____(_)___  ____" );
-        LOGGER.info( "  / /|_/ / __ `/ | / / _ \\/ __ \\    / // __ \\/ ___/ __/ __ `/ / / _ \\/ ___/  / __/ | |/_/ __/ _ \\/ __ \\/ ___/ / __ \\/ __ \\" );
-        LOGGER.info( " / /  / / /_/ /| |/ /  __/ / / /  _/ // / / (__  ) /_/ /_/ / / /  __/ /     / /____>  </ /_/  __/ / / (__  ) / /_/ / / / /" );
-        LOGGER.info( "/_/  /_/\\__,_/ |___/\\___/_/ /_/  /___/_/ /_/____/\\__/\\__,_/_/_/\\___/_/     /_____/_/|_|\\__/\\___/_/ /_/____/_/\\____/_/ /_/" );
     }
 
     @Override
@@ -125,12 +119,12 @@ public class InstallationCollector
             else
             {
                 // TODO: What kind of event we haven't considered?
-                LOGGER.debug( "MBTP: Event {}", event.getClass().getCanonicalName() );
+                LOGGER.debug( "Event {}", event.getClass().getCanonicalName() );
             }
         }
         catch ( Exception e )
         {
-            LOGGER.error( "MBTP: Exception", e );
+            LOGGER.error( "Exception", e );
         }
     }
 
@@ -147,7 +141,6 @@ public class InstallationCollector
 
     private void dependencyResolutionRequest( DependencyResolutionRequest event )
     {
-        LOGGER.debug( "MBTP: dependencyResolutionRequest()" );
     }
 
     private void repositoryEventHandler( org.eclipse.aether.RepositoryEvent repositoryEvent )
@@ -156,10 +149,8 @@ public class InstallationCollector
         switch ( type )
         {
             case ARTIFACT_DOWNLOADING:
-                LOGGER.debug( "MBTP: repositoryEventHandler {}", type );
                 break;
             case ARTIFACT_DOWNLOADED:
-                LOGGER.debug( "MBTP: repositoryEventHandler {}", type );
                 break;
 
             case ARTIFACT_DEPLOYING:
@@ -180,10 +171,8 @@ public class InstallationCollector
                 break;
 
             case METADATA_INSTALLING:
-                LOGGER.debug( "MBTP: repositoryEventHandler {}", type );
                 break;
             case METADATA_INSTALLED:
-                LOGGER.debug( "MBTP: repositoryEventHandler {}", type );
                 break;
 
             case ARTIFACT_RESOLVING:
@@ -211,6 +200,7 @@ public class InstallationCollector
                 // Start reading the pom files..
                 break;
             case SessionStarted:
+                LOGGER.info( "Maven Deployer Extension {}", MavenDeployerExtensionVersion.getVersion() + " loaded.");
                 // Reading of pom files done and structure now there.
                 // executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
                 break;
@@ -248,7 +238,7 @@ public class InstallationCollector
                 break;
 
             default:
-                LOGGER.error( "MBTP: executionEventHandler: {}", type );
+                LOGGER.error( "executionEventHandler: {}", type );
                 break;
         }
 
@@ -256,6 +246,8 @@ public class InstallationCollector
 
     private void deployArtifacts()
     {
+        LOGGER.info( "" );
+        LOGGER.info( " --- maven-deployer-extension:{} --- ", MavenDeployerExtensionVersion.getVersion() );
         for ( Artifact itemToDeploy : this.getInstalledArtifacts() )
         {
             LOGGER.info( "Deploy: " + itemToDeploy.toString() );

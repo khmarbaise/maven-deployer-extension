@@ -14,7 +14,6 @@
   <groupId>com.soebes.maven.extensions</groupId>
   <artifactId>maven-deployer-extension</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <packaging>maven-plugin</packaging>
 
   <name>The Maven Deployer Extension.</name>
   <description> of elements.</description>
@@ -26,6 +25,7 @@
 
   <properties>
     <smpp.component>maven-deployer-extension</smpp.component>
+    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
   </properties>
 
   <!-- Must be overwritten in every project. -->
@@ -62,6 +62,15 @@
       <version>1.7.5</version>
       <scope>provided</scope>
     </dependency>
+    <!--
+      ! Maven 3.1.x and above
+    -->
+    <dependency>
+      <groupId>org.eclipse.aether</groupId>
+      <artifactId>aether-api</artifactId>
+      <version>1.0.0.v20140518</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -92,4 +101,73 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>run-its</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>gmaven-plugin</artifactId>
+            <configuration>
+              <debug>false</debug>
+              <verbose>true</verbose>
+              <stacktrace>true</stacktrace>
+              <defaultScriptExtension>.groovy</defaultScriptExtension>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <configuration>
+              <addTestClassPath>true</addTestClassPath>
+              <debug>false</debug>
+              <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
+              <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+              <projectsDirectory>src/it</projectsDirectory>
+              <showVersion>true</showVersion>
+              <setupIncludes>
+                <setupInclude>setup/pom.xml</setupInclude>
+              </setupIncludes>
+              <pomIncludes>
+                <pomInclude>*/pom.xml</pomInclude>
+              </pomIncludes>
+              <preBuildHookScript>setup</preBuildHookScript>
+              <postBuildHookScript>verify</postBuildHookScript>
+              <settingsFile>src/it/settings.xml</settingsFile>
+              <!-- Currently working with more than one thread does not work, cause it is not guaranteed that the setup-config project
+                is build at first. see also http://jira.codehaus.org/browse/MINVOKER-147 -->
+              <parallelThreads>1</parallelThreads>
+              <filterProperties>
+                <pluginPropertyUsedForFiltering>localRepositoryPath</pluginPropertyUsedForFiltering>
+              </filterProperties>
+            </configuration>
+            <executions>
+              <execution>
+                <id>pre-integration-tests</id>
+                <goals>
+                  <goal>install</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>integration-tests</id>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
