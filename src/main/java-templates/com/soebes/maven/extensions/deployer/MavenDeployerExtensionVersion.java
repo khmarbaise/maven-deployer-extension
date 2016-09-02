@@ -1,15 +1,14 @@
-package com.soebes.maven.extensions;
+package com.soebes.maven.extensions.deployer;
 
-public final class BuildTimeProfilerVersion {
+public final class MavenDeployerExtensionVersion {
 
     private static final String VERSION = "${project.version}";
     private static final String GROUPID = "${project.groupId}";
     private static final String SVN = "${project.scm.developerConnection}";
     private static final String SVN_BRANCH = "${scmBranch}";
     private static final String REVISION = "${buildNumber}";
-
     
-    private BuildTimeProfilerVersion () {
+    private MavenDeployerExtensionVersion () {
         // no one should create an instance of this class.
     }
 

@@ -1,5 +1,5 @@
-Maven Installer Plugin
-======================
+Maven Deployer Extension
+========================
 
 Overview
 --------

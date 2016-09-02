@@ -12,11 +12,11 @@
   </parent>
 
   <groupId>com.soebes.maven.extensions</groupId>
-  <artifactId>maven-installer-extension</artifactId>
+  <artifactId>maven-deployer-extension</artifactId>
   <version>0.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>The Artifactor Maven Plugin.</name>
+  <name>The Maven Deployer Extension.</name>
   <description> of elements.</description>
 
   <prerequisites>
@@ -25,19 +25,19 @@
 
 
   <properties>
-    <smpp.component>maven-installer-extension</smpp.component>
+    <smpp.component>maven-deployer-extension</smpp.component>
   </properties>
 
   <!-- Must be overwritten in every project. -->
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/khmarbaise/maven-installer-extension/issues</url>
+    <url>https://github.com/khmarbaise/maven-deployer-extension/issues</url>
   </issueManagement>
 
   <scm>
-    <developerConnection>scm:git:ssh://git@github.com/khmarbaise/maven-installer-extension.git</developerConnection>
-    <connection>scm:git:https://github.com/khmarbaise/maven-installer-extension.git</connection>
-    <url>https://github.com/khmarbaise/maven-installer-extension/</url>
+    <developerConnection>scm:git:ssh://git@github.com/khmarbaise/maven-deployer-extension.git</developerConnection>
+    <connection>scm:git:https://github.com/khmarbaise/maven-deployer-extension.git</connection>
+    <url>https://github.com/khmarbaise/maven-deployer-extension/</url>
   </scm>
 
   <dependencies>

@@ -1,4 +1,4 @@
-package com.soebes.maven.extensions.installer;
+package com.soebes.maven.extensions.deployer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,26 +44,6 @@ public class InstallationCollector
         LOGGER.info( "  / /|_/ / __ `/ | / / _ \\/ __ \\    / // __ \\/ ___/ __/ __ `/ / / _ \\/ ___/  / __/ | |/_/ __/ _ \\/ __ \\/ ___/ / __ \\/ __ \\");
         LOGGER.info( " / /  / / /_/ /| |/ /  __/ / / /  _/ // / / (__  ) /_/ /_/ / / /  __/ /     / /____>  </ /_/  __/ / / (__  ) / /_/ / / / /");
         LOGGER.info( "/_/  /_/\\__,_/ |___/\\___/_/ /_/  /___/_/ /_/____/\\__/\\__,_/_/_/\\___/_/     /_____/_/|_|\\__/\\___/_/ /_/____/_/\\____/_/ /_/");
-                                                                                                                               
-        // Properties systemProperties = (Properties) context.getData().get( "systemProperties" );
-        // for ( String propName : systemProperties.stringPropertyNames() )
-        // {
-        // String propValue = systemProperties.getProperty( propName );
-        // LOGGER.info( " systemProperty " + propName + ": '" + propValue + "'" );
-        // }
-        //
-        // Properties userProperties = (Properties) context.getData().get( "userProperties" );
-        // for ( String propName : userProperties.stringPropertyNames() )
-        // {
-        // String propValue = userProperties.getProperty( propName );
-        // LOGGER.info( " userProperty " + propName + ": '" + propValue + "'" );
-        // }
-        // data.put( "plexus", container );
-        // data.put( "workingDirectory", cliRequest.workingDirectory );
-        // data.put( "systemProperties", cliRequest.systemProperties );
-        // data.put( "userProperties", cliRequest.userProperties );
-        // data.put( "versionProperties", CLIReportingUtils.getBuildProperties() );
-
     }
 
     @Override
