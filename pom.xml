@@ -50,7 +50,11 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.1.1</version>
+      <!--
+        ! We need at least 3.0.3 cause the AbstractEventSpy has been 
+        ! introduced into this version first. 
+       -->
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -81,6 +85,21 @@
             <id>generate-index</id>
             <goals>
               <goal>main-index</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-component-metadata</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>generate-metadata</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>generate-metadata</goal>
+              <goal>generate-test-metadata</goal>
             </goals>
           </execution>
         </executions>
@@ -146,19 +165,22 @@
               <filterProperties>
                 <pluginPropertyUsedForFiltering>localRepositoryPath</pluginPropertyUsedForFiltering>
               </filterProperties>
+              <extraArtifacts>
+                <extraArtifact>com.beust:jcommander:1.48:jar</extraArtifact>
+              </extraArtifacts>  
             </configuration>
-            <executions>
-              <execution>
-                <id>pre-integration-tests</id>
-                <goals>
+             <executions>
+                <execution>
+                  <id>pre-integration-tests</id>
+                  <goals>
                   <goal>install</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>integration-tests</id>
-                <goals>
+                  </goals>
+                </execution>
+                <execution>
+                  <id>integration-tests</id>
+                  <goals>
                   <goal>run</goal>
-                </goals>
+                  </goals>
               </execution>
             </executions>
           </plugin>
@@ -173,15 +195,6 @@
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-artifact-transfer</artifactId>
         <version>3.0.0-SNAPSHOT</version>
-        <exclusions>
-          <!--
-            ! Needed to be excluded otherwise the extension will not work. 
-           -->
-          <exclusion>
-            <groupId>org.sonatype.sisu</groupId>
-            <artifactId>sisu-inject-plexus</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.maven</groupId>

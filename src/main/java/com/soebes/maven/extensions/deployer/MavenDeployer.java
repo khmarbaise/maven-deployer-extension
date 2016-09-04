@@ -2,6 +2,7 @@ package com.soebes.maven.extensions.deployer;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -9,6 +10,8 @@ import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.ExecutionEvent.Type;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.artifact.deploy.ArtifactDeployer;
+import org.apache.maven.shared.artifact.deploy.internal.DefaultArtifactDeployer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,19 +25,19 @@ public class MavenDeployer
 {
     private final Logger LOGGER = LoggerFactory.getLogger( getClass() );
 
+    @Inject
+    private ArtifactDeployer deployer;
+
     public MavenDeployer()
     {
     }
 
-//    @Inject
-//    private ArtifactDeployer deployer;
 
     @Override
     public void init( Context context )
         throws Exception
     {
         super.init( context );
-//        this.deployer = new DefaultArtifactDeployer();
         LOGGER.info( "Maven Deployer Extension {}", MavenDeployerExtensionVersion.getVersion() + " loaded." );
     }
 
