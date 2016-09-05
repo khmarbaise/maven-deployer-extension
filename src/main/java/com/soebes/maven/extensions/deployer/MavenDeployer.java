@@ -80,6 +80,7 @@ public class MavenDeployer
             case ProjectDiscoveryStarted:
                 break;
             case SessionStarted:
+                boolean removed = false;
                 // Reading of pom files done and structure now there.
                 List<MavenProject> sortedProjects =
                     executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
@@ -91,11 +92,14 @@ public class MavenDeployer
                         if ( "org.apache.maven.plugins".equals( plugin.getGroupId() )
                             && "maven-deploy-plugin".equals( plugin.getArtifactId() ) )
                         {
-                            LOGGER.warn( "org.apache.maven.plugins:maven-deploy-plugin:deploy has been deactivated." );
+                            if (!removed) {
+                                LOGGER.warn( "org.apache.maven.plugins:maven-deploy-plugin:deploy has been deactivated." );
+                            }
                             List<PluginExecution> executions = plugin.getExecutions();
                             for ( PluginExecution pluginExecution : executions )
                             {
                                 pluginExecution.removeGoal( "deploy" );
+                                removed = true;
                             }
                         }
                     }
