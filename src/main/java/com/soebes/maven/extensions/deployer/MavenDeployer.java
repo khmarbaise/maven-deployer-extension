@@ -14,6 +14,8 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.ExecutionEvent.Type;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 import org.apache.maven.shared.artifact.deploy.ArtifactDeployer;
@@ -21,12 +23,11 @@ import org.apache.maven.shared.artifact.deploy.ArtifactDeployerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Karl Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
 @Singleton
-@Named(value = "deployer")
+@Named( value = "deployer" )
 public class MavenDeployer
     extends AbstractEventSpy
 {
@@ -38,7 +39,6 @@ public class MavenDeployer
     public MavenDeployer()
     {
     }
-
 
     @Override
     public void init( Context context )
@@ -85,7 +85,30 @@ public class MavenDeployer
                 // }
 
                 // Reading of pom files done and structure now there.
-                // executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
+                List<MavenProject> sortedProjects =
+                    executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
+                for ( MavenProject mavenProject : sortedProjects )
+                {
+                    List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
+                    for ( Plugin plugin : buildPlugins )
+                    {
+                        if ( "org.apache.maven.plugins".equals( plugin.getGroupId() )
+                            && "maven-deploy-plugin".equals( plugin.getArtifactId() ) )
+                        {
+                            LOGGER.warn( "org.apache.maven.plugins:maven-deploy-plugin:deploy has been deactivated." );
+                            List<PluginExecution> executions = plugin.getExecutions();
+                            for ( PluginExecution pluginExecution : executions )
+                            {
+                                pluginExecution.removeGoal( "deploy" );
+                            }
+                        }
+                    }
+
+                }
+
+                //
+                // Turn of maven-deploy-plugin ?
+//                executionEvent.getSession().getUserProperties().put( "maven.deploy.skip", "true" );
                 break;
             case SessionEnded:
                 // Everything is done.
@@ -99,6 +122,10 @@ public class MavenDeployer
             case ForkedProjectFailed:
             case ForkedProjectSucceeded:
             case MojoStarted:
+                // Identify all plugins which have run
+                // If maven-deploy-plugin with goal has run
+                // we need to fail !
+                // or find a way to skip the execution of maven-deploy-plugin somehow?
                 break;
             case MojoFailed:
             case MojoSucceeded:
