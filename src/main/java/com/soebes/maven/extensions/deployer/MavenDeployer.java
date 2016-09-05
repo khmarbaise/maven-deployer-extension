@@ -80,10 +80,6 @@ public class MavenDeployer
             case ProjectDiscoveryStarted:
                 break;
             case SessionStarted:
-                // List<String> goals = executionEvent.getSession().getGoals();
-                // if (goals.contains( "deploy" )) {
-                // }
-
                 // Reading of pom files done and structure now there.
                 List<MavenProject> sortedProjects =
                     executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
@@ -105,10 +101,6 @@ public class MavenDeployer
                     }
 
                 }
-
-                //
-                // Turn of maven-deploy-plugin ?
-//                executionEvent.getSession().getUserProperties().put( "maven.deploy.skip", "true" );
                 break;
             case SessionEnded:
                 // Everything is done.
@@ -183,7 +175,7 @@ public class MavenDeployer
 
         ArtifactRepository repo = request.getProject().getDistributionManagementArtifactRepository();
 
-        LOGGER.info( "Deployment repo:" + repo );
+        LOGGER.debug( "Deployment repo:" + repo );
         // Deploy the POM
         boolean isPomArtifact = "pom".equals( packaging );
         if ( !isPomArtifact )
