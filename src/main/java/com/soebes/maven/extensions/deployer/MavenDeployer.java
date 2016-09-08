@@ -77,7 +77,7 @@ public class MavenDeployer
         LOGGER.debug( "Maven Deployer Extension." );
     }
 
-    private boolean hasBeenCalledWithGoal( ExecutionEvent executionEvent, String goal )
+    private boolean goalsContain( ExecutionEvent executionEvent, String goal )
     {
         return executionEvent.getSession().getGoals().contains( goal );
     }
@@ -123,7 +123,7 @@ public class MavenDeployer
 
     private void sessionEnded( ExecutionEvent executionEvent )
     {
-        if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
+        if ( goalsContain( executionEvent, "deploy" ) )
         {
             logDeployerVersion();
             deployArtifacts( executionEvent );
@@ -137,7 +137,7 @@ public class MavenDeployer
 
     private void sessionStarted( ExecutionEvent executionEvent )
     {
-        if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
+        if ( goalsContain( executionEvent, "deploy" ) )
         {
             removeDeployPluginFromLifeCycle( executionEvent );
         }
