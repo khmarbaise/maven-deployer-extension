@@ -275,8 +275,8 @@ public class MavenDeployer
         }
     }
 
-    protected void deploy( ExecutionEvent executionEvent, Collection<Artifact> artifacts,
-                           ArtifactRepository deploymentRepository, int retryFailedDeploymentCount )
+    private void deploy( ExecutionEvent executionEvent, Collection<Artifact> artifacts,
+                         ArtifactRepository deploymentRepository, int retryFailedDeploymentCount )
         throws ArtifactDeployerException
     {
 
