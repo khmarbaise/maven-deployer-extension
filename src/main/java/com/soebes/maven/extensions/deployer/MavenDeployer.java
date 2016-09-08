@@ -46,7 +46,6 @@ public class MavenDeployer
     {
         super.init( context );
         LOGGER.info( "Maven Deployer Extension {}", MavenDeployerExtensionVersion.getVersion() + " loaded." );
-        LOGGER.info( " Context: {} ", deployer );
     }
 
     @Override
@@ -80,31 +79,8 @@ public class MavenDeployer
             case ProjectDiscoveryStarted:
                 break;
             case SessionStarted:
-                boolean removed = false;
                 // Reading of pom files done and structure now there.
-                List<MavenProject> sortedProjects =
-                    executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
-                for ( MavenProject mavenProject : sortedProjects )
-                {
-                    List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
-                    for ( Plugin plugin : buildPlugins )
-                    {
-                        if ( "org.apache.maven.plugins".equals( plugin.getGroupId() )
-                            && "maven-deploy-plugin".equals( plugin.getArtifactId() ) )
-                        {
-                            if (!removed) {
-                                LOGGER.warn( "org.apache.maven.plugins:maven-deploy-plugin:deploy has been deactivated." );
-                            }
-                            List<PluginExecution> executions = plugin.getExecutions();
-                            for ( PluginExecution pluginExecution : executions )
-                            {
-                                pluginExecution.removeGoal( "deploy" );
-                                removed = true;
-                            }
-                        }
-                    }
-
-                }
+                removePluginFromLifeCycle( executionEvent );
                 break;
             case SessionEnded:
                 // Everything is done.
@@ -137,6 +113,34 @@ public class MavenDeployer
                 break;
         }
 
+    }
+
+    private void removePluginFromLifeCycle( ExecutionEvent executionEvent )
+    {
+        boolean removed = false;
+        List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
+        for ( MavenProject mavenProject : sortedProjects )
+        {
+            List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
+            for ( Plugin plugin : buildPlugins )
+            {
+                if ( "org.apache.maven.plugins".equals( plugin.getGroupId() )
+                    && "maven-deploy-plugin".equals( plugin.getArtifactId() ) )
+                {
+                    if ( !removed )
+                    {
+                        LOGGER.warn( "org.apache.maven.plugins:maven-deploy-plugin:deploy has been deactivated." );
+                    }
+                    List<PluginExecution> executions = plugin.getExecutions();
+                    for ( PluginExecution pluginExecution : executions )
+                    {
+                        pluginExecution.removeGoal( "deploy" );
+                        removed = true;
+                    }
+                }
+            }
+
+        }
     }
 
     private void deployArtifacts( ExecutionEvent executionEvent )
