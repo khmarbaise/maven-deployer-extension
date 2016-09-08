@@ -105,11 +105,6 @@ public class MavenDeployer
             case ForkedProjectFailed:
             case ForkedProjectSucceeded:
             case MojoStarted:
-                // Identify all plugins which have run
-                // If maven-deploy-plugin with goal has run
-                // we need to fail !
-                // or find a way to skip the execution of maven-deploy-plugin somehow?
-                break;
             case MojoFailed:
             case MojoSucceeded:
             case MojoSkipped:
