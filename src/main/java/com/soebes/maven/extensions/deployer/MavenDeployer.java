@@ -91,22 +91,11 @@ public class MavenDeployer
                 break;
             case SessionStarted:
                 // Reading of pom files done and structure now there.
-                if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
-                {
-                    removeDeployPluginFromLifeCycle( executionEvent );
-                }
+                sessionStarted( executionEvent );
                 break;
             case SessionEnded:
                 // Everything is done.
-                if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
-                {
-                    deployArtifacts( executionEvent );
-                }
-                else
-                {
-                    logDeployerVersion();
-                    LOGGER.info( " skipping." );
-                }
+                sessionEnded( executionEvent );
                 break;
 
             case ForkStarted:
@@ -137,6 +126,28 @@ public class MavenDeployer
 
     }
 
+    private void sessionEnded( ExecutionEvent executionEvent )
+    {
+        if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
+        {
+            logDeployerVersion();
+            deployArtifacts( executionEvent );
+        }
+        else
+        {
+            logDeployerVersion();
+            LOGGER.info( " skipping." );
+        }
+    }
+
+    private void sessionStarted( ExecutionEvent executionEvent )
+    {
+        if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
+        {
+            removeDeployPluginFromLifeCycle( executionEvent );
+        }
+    }
+
     private void removeDeployPluginFromLifeCycle( ExecutionEvent executionEvent )
     {
         removePluginFromLifeCycle( executionEvent, "org.apache.maven.plugins", "maven-deploy-plugin", "deploy" );
@@ -157,7 +168,7 @@ public class MavenDeployer
                 {
                     if ( !removed )
                     {
-                        LOGGER.warn( "org.apache.maven.plugins:maven-deploy-plugin:deploy has been deactivated." );
+                        LOGGER.warn( groupId + ":" + artifactId + ":" + goal + " has been deactivated." );
                     }
                     List<PluginExecution> executions = plugin.getExecutions();
                     for ( PluginExecution pluginExecution : executions )
