@@ -45,7 +45,13 @@ public class MavenDeployer
         throws Exception
     {
         super.init( context );
-        LOGGER.info( "Maven Deployer Extension {}", MavenDeployerExtensionVersion.getVersion() + " loaded." );
+        logDeployerVersion();
+    }
+
+    private void logDeployerVersion()
+    {
+        LOGGER.info( "" );
+        LOGGER.info( " --- maven-deployer-extension:{} --- ", MavenDeployerExtensionVersion.getVersion() );
     }
 
     @Override
@@ -71,6 +77,11 @@ public class MavenDeployer
         LOGGER.debug( "Maven Deployer Extension." );
     }
 
+    private boolean hasBeenCalledWithGoal( ExecutionEvent executionEvent, String goal )
+    {
+        return executionEvent.getSession().getGoals().contains( goal );
+    }
+
     private void executionEventHandler( ExecutionEvent executionEvent )
     {
         Type type = executionEvent.getType();
@@ -80,11 +91,22 @@ public class MavenDeployer
                 break;
             case SessionStarted:
                 // Reading of pom files done and structure now there.
-                removePluginFromLifeCycle( executionEvent );
+                if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
+                {
+                    removeDeployPluginFromLifeCycle( executionEvent );
+                }
                 break;
             case SessionEnded:
                 // Everything is done.
-                deployArtifacts( executionEvent );
+                if ( hasBeenCalledWithGoal( executionEvent, "deploy" ) )
+                {
+                    deployArtifacts( executionEvent );
+                }
+                else
+                {
+                    logDeployerVersion();
+                    LOGGER.info( " skipping." );
+                }
                 break;
 
             case ForkStarted:
@@ -115,8 +137,15 @@ public class MavenDeployer
 
     }
 
-    private void removePluginFromLifeCycle( ExecutionEvent executionEvent )
+    private void removeDeployPluginFromLifeCycle( ExecutionEvent executionEvent )
     {
+        removePluginFromLifeCycle( executionEvent, "org.apache.maven.plugins", "maven-deploy-plugin", "deploy" );
+    }
+
+    private void removePluginFromLifeCycle( ExecutionEvent executionEvent, String groupId, String artifactId,
+                                            String goal )
+    {
+
         boolean removed = false;
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
@@ -124,8 +153,7 @@ public class MavenDeployer
             List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
             for ( Plugin plugin : buildPlugins )
             {
-                if ( "org.apache.maven.plugins".equals( plugin.getGroupId() )
-                    && "maven-deploy-plugin".equals( plugin.getArtifactId() ) )
+                if ( groupId.equals( plugin.getGroupId() ) && artifactId.equals( plugin.getArtifactId() ) )
                 {
                     if ( !removed )
                     {
@@ -134,7 +162,7 @@ public class MavenDeployer
                     List<PluginExecution> executions = plugin.getExecutions();
                     for ( PluginExecution pluginExecution : executions )
                     {
-                        pluginExecution.removeGoal( "deploy" );
+                        pluginExecution.removeGoal( goal );
                         removed = true;
                     }
                 }
@@ -145,29 +173,15 @@ public class MavenDeployer
 
     private void deployArtifacts( ExecutionEvent executionEvent )
     {
-        List<String> goals = executionEvent.getSession().getGoals();
-
-        if ( goals.contains( "deploy" ) )
+        List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
+        for ( MavenProject mavenProject : sortedProjects )
         {
-            List<MavenProject> sortedProjects =
-                executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
-            LOGGER.info( "" );
-            LOGGER.info( " --- maven-deployer-extension:{} --- ", MavenDeployerExtensionVersion.getVersion() );
-            for ( MavenProject mavenProject : sortedProjects )
-            {
-                LOGGER.info( " Deploying " + mavenProject.getId() );
-                DeployRequest currentExecutionDeployRequest =
-                    new DeployRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
+            LOGGER.info( "Deploying artifact: " + mavenProject.getId() );
+            DeployRequest currentExecutionDeployRequest =
+                new DeployRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
 
-                deployProject( executionEvent, currentExecutionDeployRequest );
+            deployProject( executionEvent, currentExecutionDeployRequest );
 
-            }
-        }
-        else
-        {
-            LOGGER.info( "" );
-            LOGGER.info( " --- maven-deployer-extension:{} --- ", MavenDeployerExtensionVersion.getVersion() );
-            LOGGER.info( " skipping." );
         }
     }
 
