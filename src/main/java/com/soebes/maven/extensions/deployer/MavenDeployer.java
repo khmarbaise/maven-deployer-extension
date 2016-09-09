@@ -172,19 +172,16 @@ public class MavenDeployer
 
     private void deployArtifacts( ExecutionEvent executionEvent )
     {
-        List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
+        ArtifactRepository repository =
+                        executionEvent.getSession().getTopLevelProject().getDistributionManagementArtifactRepository();
 
-        ArtifactRepository distributionManagementArtifactRepository =
-            executionEvent.getSession().getTopLevelProject().getDistributionManagementArtifactRepository();
+        List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
         {
-            LOGGER.info( "Deploying artifact: " + mavenProject.getId() );
             DeployRequest deployRequest = new DeployRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
 
-            // distributionManagementArtifactRepository
-
             deployProject.deployProject( executionEvent.getSession().getProjectBuildingRequest(), deployRequest,
-                                         distributionManagementArtifactRepository );
+                                         repository );
         }
     }
 

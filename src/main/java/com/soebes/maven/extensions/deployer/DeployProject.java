@@ -25,6 +25,14 @@ public class DeployProject
     @Inject
     private ArtifactDeployer deployer;
 
+    /**
+     * This will deploy a single project which may contain several artifacts
+     * into the appropriate remote repository.
+     * 
+     * @param buildingRequest {@link ProjectBuildingRequest}
+     * @param request {@link DeployRequest}
+     * @param artifactRepository {@link ArtifactRepository}
+     */
     public void deployProject( ProjectBuildingRequest buildingRequest, DeployRequest request,
                                ArtifactRepository artifactRepository )
     {
