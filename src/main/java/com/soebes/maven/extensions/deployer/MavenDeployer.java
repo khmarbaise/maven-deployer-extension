@@ -83,11 +83,9 @@ public class MavenDeployer
             case ProjectDiscoveryStarted:
                 break;
             case SessionStarted:
-                // Reading of pom files done and structure now there.
                 sessionStarted( executionEvent );
                 break;
             case SessionEnded:
-                // Everything is done.
                 sessionEnded( executionEvent );
                 break;
 
@@ -166,7 +164,6 @@ public class MavenDeployer
                     }
                 }
             }
-
         }
     }
 
