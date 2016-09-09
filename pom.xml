@@ -22,7 +22,6 @@
     <maven>3.0.5</maven>
   </prerequisites>
 
-
   <properties>
     <smpp.component>maven-deployer-extension</smpp.component>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>

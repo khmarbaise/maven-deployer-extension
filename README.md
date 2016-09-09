@@ -9,9 +9,9 @@ Overview
 --------
 
  The idea of the extension is to handle  `deployAtEnd` of the
- maven-deploy-plugin correctly which can only be handled correctly from
- an extension.
-
+ maven-deploy-plugin correctly. The problem in the maven-deploy-plugin
+ is simply this will not work correctly if you use other plugins which
+ define their own lifecycle (for example Eclipse Tycho etc.).
  
  If you like to use this extension in relationship with Maven 3.3.1+ you
  can define the following `.mvn/extensions.xml` file:
@@ -22,12 +22,12 @@ Overview
   <extension>
     <groupId>com.soebes.maven.extensions</groupId>
     <artifactId>maven-deployer-extension</artifactId>
-    <version>0.1.0</version>
+    <version>XXXXXX</version>
   </extension>
 </extensions>
 ```
 
-The download from Maven Central will be done by Maven itself.
+ Not yet in Central. 
  
 License
 -------
