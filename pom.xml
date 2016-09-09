@@ -82,9 +82,6 @@
          <groupId>org.eclipse.sisu</groupId>
         <artifactId>sisu-maven-plugin</artifactId>
         <version>0.3.3</version>
-<!--         <groupId>org.sonatype.plugins</groupId> -->
-<!--         <artifactId>sisu-maven-plugin</artifactId> -->
-<!--         <version>1.4</version> -->
         <executions>
           <execution>
             <id>generate-index</id>
@@ -94,21 +91,6 @@
           </execution>
         </executions>
       </plugin>
-<!--       <plugin> -->
-<!--         <groupId>org.codehaus.plexus</groupId> -->
-<!--         <artifactId>plexus-component-metadata</artifactId> -->
-<!--         <version>1.7</version> -->
-<!--         <executions> -->
-<!--           <execution> -->
-<!--             <id>generate-metadata</id> -->
-<!--             <phase>generate-resources</phase> -->
-<!--             <goals> -->
-<!--               <goal>generate-metadata</goal> -->
-<!--               <goal>generate-test-metadata</goal> -->
-<!--             </goals> -->
-<!--           </execution> -->
-<!--         </executions> -->
-<!--       </plugin> -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>templating-maven-plugin</artifactId>
