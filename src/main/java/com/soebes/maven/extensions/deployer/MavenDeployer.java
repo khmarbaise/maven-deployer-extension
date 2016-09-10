@@ -27,11 +27,14 @@ import javax.inject.Singleton;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.eventspy.AbstractEventSpy;
+import org.apache.maven.eventspy.EventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.ExecutionEvent.Type;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.project.deploy.ProjectDeployRequest;
+import org.apache.maven.shared.project.deploy.ProjectDeployer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +53,7 @@ public class MavenDeployer
     private final Logger LOGGER = LoggerFactory.getLogger( getClass() );
 
     @Inject
-    private DeployProject deployProject;
+    private ProjectDeployer projectDeployer;
 
     public MavenDeployer()
     {
@@ -206,9 +209,9 @@ public class MavenDeployer
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
         {
-            DeployRequest deployRequest = new DeployRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
+            ProjectDeployRequest deployRequest = new ProjectDeployRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
 
-            deployProject.deployProject( executionEvent.getSession().getProjectBuildingRequest(), deployRequest,
+            projectDeployer.deployProject( executionEvent.getSession().getProjectBuildingRequest(), deployRequest,
                                          repository );
         }
     }
