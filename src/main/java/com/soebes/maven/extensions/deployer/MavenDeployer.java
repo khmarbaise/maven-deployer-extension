@@ -33,8 +33,8 @@ import org.apache.maven.execution.ExecutionEvent.Type;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.project.deploy.ProjectDeployRequest;
 import org.apache.maven.shared.project.deploy.ProjectDeployer;
+import org.apache.maven.shared.project.deploy.ProjectDeployerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,7 +209,7 @@ public class MavenDeployer
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
         {
-            ProjectDeployRequest deployRequest = new ProjectDeployRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
+            ProjectDeployerRequest deployRequest = new ProjectDeployerRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
 
             projectDeployer.deployProject( executionEvent.getSession().getProjectBuildingRequest(), deployRequest,
                                          repository );
