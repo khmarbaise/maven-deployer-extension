@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author Karl Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
 @Singleton
-@Named( value = "deployer" )
+@Named
 public class MavenDeployer
     extends AbstractEventSpy
 {
