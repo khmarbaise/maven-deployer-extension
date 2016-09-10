@@ -1,5 +1,24 @@
 package com.soebes.maven.extensions.deployer;
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,6 +36,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This {@link EventSpy} implementation will handle the events of SessionEnd to identify the correct timepoint to deploy
+ * all artifacts of the project into the given remote repository. This will also work if you are using plugins which
+ * define their own lifecycle.
+ * 
  * @author Karl Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
 @Singleton
@@ -53,6 +76,7 @@ public class MavenDeployer
     {
         try
         {
+            //We are only interested in the ExecutionEvent.
             if ( event instanceof ExecutionEvent )
             {
                 executionEventHandler( (ExecutionEvent) event );
@@ -67,6 +91,7 @@ public class MavenDeployer
     @Override
     public void close()
     {
+        //TODO: Check if we need to do something here?
         LOGGER.debug( "Maven Deployer Extension." );
     }
 
@@ -112,16 +137,22 @@ public class MavenDeployer
 
     }
 
+    /**
+     * This will start to deploy all artifacts
+     * into remote repository if the goal {@code deploy} has been
+     * called.
+     *  
+     * @param executionEvent
+     */
     private void sessionEnded( ExecutionEvent executionEvent )
     {
+        logDeployerVersion();
         if ( goalsContain( executionEvent, "deploy" ) )
         {
-            logDeployerVersion();
             deployArtifacts( executionEvent );
         }
         else
         {
-            logDeployerVersion();
             LOGGER.info( " skipping." );
         }
     }
@@ -169,8 +200,10 @@ public class MavenDeployer
 
     private void deployArtifacts( ExecutionEvent executionEvent )
     {
+        // Assumption is to have the distributionManagement in the top level
+        // pom file located.
         ArtifactRepository repository =
-                        executionEvent.getSession().getTopLevelProject().getDistributionManagementArtifactRepository();
+            executionEvent.getSession().getTopLevelProject().getDistributionManagementArtifactRepository();
 
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
