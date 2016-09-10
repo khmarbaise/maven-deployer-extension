@@ -36,9 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This {@link EventSpy} implementation will handle the events of SessionEnd to identify the correct timepoint to deploy
- * all artifacts of the project into the given remote repository. This will also work if you are using plugins which
- * define their own lifecycle.
+ * This {@link EventSpy} implementation will handle the events of SessionEnd to identify the correct point in time to
+ * deploy all artifacts of the project into the given remote repository. This will also work if you are using plugins
+ * which define their own lifecycle.
  * 
  * @author Karl Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  */
@@ -76,7 +76,7 @@ public class MavenDeployer
     {
         try
         {
-            //We are only interested in the ExecutionEvent.
+            // We are only interested in the ExecutionEvent.
             if ( event instanceof ExecutionEvent )
             {
                 executionEventHandler( (ExecutionEvent) event );
@@ -91,7 +91,7 @@ public class MavenDeployer
     @Override
     public void close()
     {
-        //TODO: Check if we need to do something here?
+        // TODO: Check if we need to do something here?
         LOGGER.debug( "Maven Deployer Extension." );
     }
 
@@ -138,10 +138,8 @@ public class MavenDeployer
     }
 
     /**
-     * This will start to deploy all artifacts
-     * into remote repository if the goal {@code deploy} has been
-     * called.
-     *  
+     * This will start to deploy all artifacts into remote repository if the goal {@code deploy} has been called.
+     * 
      * @param executionEvent
      */
     private void sessionEnded( ExecutionEvent executionEvent )
@@ -149,7 +147,7 @@ public class MavenDeployer
         logDeployerVersion();
         if ( goalsContain( executionEvent, "deploy" ) )
         {
-            deployArtifacts( executionEvent );
+            deployProjects( executionEvent );
         }
         else
         {
@@ -198,7 +196,7 @@ public class MavenDeployer
         }
     }
 
-    private void deployArtifacts( ExecutionEvent executionEvent )
+    private void deployProjects( ExecutionEvent executionEvent )
     {
         // Assumption is to have the distributionManagement in the top level
         // pom file located.

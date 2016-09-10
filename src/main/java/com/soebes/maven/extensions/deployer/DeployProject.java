@@ -41,6 +41,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Karl Heinz Marbaise <a href="mailto:khmarbaise@apache.org">khmarbaise@apache.org</a>
  *
+ * Most of the code is taken from maven-dependency-plugin.
+ * 
  */
 @Singleton
 public class DeployProject

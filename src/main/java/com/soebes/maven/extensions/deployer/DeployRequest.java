@@ -22,6 +22,7 @@ package com.soebes.maven.extensions.deployer;
 import org.apache.maven.project.MavenProject;
 
 /**
+ * This code has been taken from maven-deploy-plugin.
  * 
  * @author Robert Scholte
  * @since 2.8.1
