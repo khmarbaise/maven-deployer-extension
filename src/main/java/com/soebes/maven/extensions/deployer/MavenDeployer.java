@@ -160,10 +160,25 @@ public class MavenDeployer
 
     private void sessionStarted( ExecutionEvent executionEvent )
     {
-        if ( goalsContain( executionEvent, "deploy" ) )
+        if ( containsLifeCycleDeployPluginGoal( executionEvent, "deploy" ) )
         {
             removeDeployPluginFromLifeCycle( executionEvent );
         }
+
+        if ( containsLifeCycleInstallPluginGoal( executionEvent, "install" ) )
+        {
+            removeInstallPluginFromLifeCycle( executionEvent );
+        }
+    }
+
+    private boolean containsLifeCycleDeployPluginGoal( ExecutionEvent executionEvent, String goal )
+    {
+        return containsLifeCyclePluginGoals( executionEvent, "org.apache.maven.plugins", "maven-deploy-plugin", goal );
+    }
+
+    private boolean containsLifeCycleInstallPluginGoal( ExecutionEvent executionEvent, String goal )
+    {
+        return containsLifeCyclePluginGoals( executionEvent, "org.apache.maven.plugins", "maven-install-plugin", goal );
     }
 
     private void removeDeployPluginFromLifeCycle( ExecutionEvent executionEvent )
@@ -171,17 +186,57 @@ public class MavenDeployer
         removePluginFromLifeCycle( executionEvent, "org.apache.maven.plugins", "maven-deploy-plugin", "deploy" );
     }
 
-    private void removePluginFromLifeCycle( ExecutionEvent executionEvent, String groupId, String artifactId,
-                                            String goal )
+    private void removeInstallPluginFromLifeCycle( ExecutionEvent executionEvent )
+    {
+        removePluginFromLifeCycle( executionEvent, "org.apache.maven.plugins", "maven-install-plugin", "install" );
+    }
+
+    private boolean containsLifeCyclePluginGoals( ExecutionEvent executionEvent, String groupId, String artifactId,
+                                                  String goal )
     {
 
-        boolean removed = false;
+        boolean result = false;
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
         {
             List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
             for ( Plugin plugin : buildPlugins )
             {
+                if ( groupId.equals( plugin.getGroupId() ) && artifactId.equals( plugin.getArtifactId() ) )
+                {
+                    List<PluginExecution> executions = plugin.getExecutions();
+                    for ( PluginExecution pluginExecution : executions )
+                    {
+                        if ( pluginExecution.getGoals().contains( goal ) )
+                        {
+                            result = true;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private void removePluginFromLifeCycle( ExecutionEvent executionEvent, String groupId, String artifactId,
+                                            String goal )
+    {
+
+        boolean removed = false;
+        
+        List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
+        for ( MavenProject mavenProject : sortedProjects )
+        {
+            List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
+            for ( Plugin plugin : buildPlugins )
+            {
+                LOGGER.info( "Plugin: " + plugin.getId() );
+                List<PluginExecution> printExecutions = plugin.getExecutions();
+                for ( PluginExecution pluginExecution : printExecutions )
+                {
+                    LOGGER.info( "  -> " + pluginExecution.getGoals() );
+                }
+
                 if ( groupId.equals( plugin.getGroupId() ) && artifactId.equals( plugin.getArtifactId() ) )
                 {
                     if ( !removed )
@@ -209,10 +264,11 @@ public class MavenDeployer
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
         {
-            ProjectDeployerRequest deployRequest = new ProjectDeployerRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
+            ProjectDeployerRequest deployRequest =
+                new ProjectDeployerRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
 
             projectDeployer.deployProject( executionEvent.getSession().getProjectBuildingRequest(), deployRequest,
-                                         repository );
+                                           repository );
         }
     }
 
