@@ -1,5 +1,11 @@
 package com.soebes.maven.extensions.deployer;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,6 +31,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.eventspy.EventSpy;
@@ -32,9 +40,16 @@ import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.ExecutionEvent.Type;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.artifact.ProjectArtifact;
+import org.apache.maven.project.artifact.ProjectArtifactMetadata;
+import org.apache.maven.shared.artifact.install.ArtifactInstaller;
+import org.apache.maven.shared.artifact.install.ArtifactInstallerException;
 import org.apache.maven.shared.project.deploy.ProjectDeployer;
 import org.apache.maven.shared.project.deploy.ProjectDeployerRequest;
+import org.apache.maven.shared.repository.RepositoryManager;
+import org.apache.maven.shared.utils.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +69,9 @@ public class MavenDeployer
 
     @Inject
     private ProjectDeployer projectDeployer;
+
+    @Inject
+    ProjectInstaller projectInstaller;
 
     public MavenDeployer()
     {
@@ -148,8 +166,13 @@ public class MavenDeployer
     private void sessionEnded( ExecutionEvent executionEvent )
     {
         logDeployerVersion();
+        
+        LOGGER.info( "Installing artifacts..." );
+        installProjects( executionEvent );
+
         if ( goalsContain( executionEvent, "deploy" ) )
         {
+            LOGGER.info( "Deploying artifacts..." );
             deployProjects( executionEvent );
         }
         else
@@ -223,7 +246,7 @@ public class MavenDeployer
     {
 
         boolean removed = false;
-        
+
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
         {
@@ -272,4 +295,25 @@ public class MavenDeployer
         }
     }
 
+    private void installProjects( ExecutionEvent exec )
+    {
+        try
+        {
+            ArtifactRepository repository = exec.getSession().getLocalRepository();
+
+            List<MavenProject> sortedProjects = exec.getSession().getProjectDependencyGraph().getSortedProjects();
+            for ( MavenProject mavenProject : sortedProjects )
+            {
+                ProjectInstallerRequest ir =
+                    new ProjectInstallerRequest().setProject( mavenProject ).setCreateChecksum( false ).setUpdateReleaseInfo( false );
+
+                projectInstaller.installProject( exec.getSession().getProjectBuildingRequest(), ir, repository );
+            }
+
+        }
+        catch ( MojoExecutionException e )
+        {
+            e.printStackTrace();
+        }
+    }
 }
