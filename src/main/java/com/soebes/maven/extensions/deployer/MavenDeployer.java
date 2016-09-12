@@ -243,11 +243,11 @@ public class MavenDeployer
             List<Plugin> buildPlugins = mavenProject.getBuildPlugins();
             for ( Plugin plugin : buildPlugins )
             {
-                LOGGER.info( "Plugin: " + plugin.getId() );
+                LOGGER.debug( "Plugin: " + plugin.getId() );
                 List<PluginExecution> printExecutions = plugin.getExecutions();
                 for ( PluginExecution pluginExecution : printExecutions )
                 {
-                    LOGGER.info( "  -> " + pluginExecution.getGoals() );
+                    LOGGER.debug( "  -> " + pluginExecution.getGoals() );
                 }
 
                 if ( groupId.equals( plugin.getGroupId() ) && artifactId.equals( plugin.getArtifactId() ) )
