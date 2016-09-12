@@ -1,5 +1,7 @@
 package com.soebes.maven.extensions.deployer;
 
+import java.io.IOException;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -32,10 +34,12 @@ import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.ExecutionEvent.Type;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.artifact.install.ArtifactInstallerException;
 import org.apache.maven.shared.project.deploy.ProjectDeployer;
 import org.apache.maven.shared.project.deploy.ProjectDeployerRequest;
+import org.apache.maven.shared.project.install.ProjectInstaller;
+import org.apache.maven.shared.project.install.ProjectInstallerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -297,7 +301,11 @@ public class MavenDeployer
             }
 
         }
-        catch ( MojoExecutionException e )
+        catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+        catch ( ArtifactInstallerException e )
         {
             e.printStackTrace();
         }
