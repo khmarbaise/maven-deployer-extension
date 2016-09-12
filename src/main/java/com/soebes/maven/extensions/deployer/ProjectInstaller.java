@@ -189,7 +189,6 @@ public class ProjectInstaller
         boolean signatureFile = installedFile.getName().endsWith( ".asc" );
         if ( installedFile.isFile() && !signatureFile )
         {
-
             LOGGER.debug( "Calculating checksums for " + installedFile );
             digester.calculate( installedFile );
             installChecksum( installedFile, ".md5", digester.getMd5() );
