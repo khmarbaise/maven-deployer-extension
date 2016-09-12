@@ -1,7 +1,5 @@
 package com.soebes.maven.extensions.deployer;
 
-import org.apache.maven.execution.MavenSession;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -39,8 +37,6 @@ public class ProjectInstallerRequest
     // From InstallMojo
     
     private MavenProject project;
-    
-    private MavenSession session;
     
     /**
      * @return the createChecksum
