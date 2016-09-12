@@ -13,7 +13,6 @@ import javax.inject.Named;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
@@ -117,13 +116,6 @@ public class ProjectInstaller
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-    }
-
-    public void installProject( ExecutionEvent executionEvent  ) throws MojoExecutionException
-    {
-        ProjectInstallerRequest ir =
-            new ProjectInstallerRequest().setProject( executionEvent.getProject() ).setCreateChecksum( false ).setUpdateReleaseInfo( false );
-        
     }
 
     /**
