@@ -1,7 +1,5 @@
 package com.soebes.maven.extensions.deployer;
 
-import java.io.IOException;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,6 +19,7 @@ import java.io.IOException;
  * under the License.
  */
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -63,8 +62,11 @@ public class MavenDeployer
     @Inject
     private ProjectInstaller projectInstaller;
 
+    private boolean failure;
+
     public MavenDeployer()
     {
+        this.failure = false;
     }
 
     @Override
@@ -122,21 +124,31 @@ public class MavenDeployer
                 sessionStarted( executionEvent );
                 break;
             case SessionEnded:
-                sessionEnded( executionEvent );
+                if ( this.failure )
+                {
+                    LOGGER.info( "The Maven Deployer Extension will not be called based on previous errors." );
+                }
+                else
+                {
+                    sessionEnded( executionEvent );
+                }
+                break;
+            case ForkFailed:
+            case ForkedProjectFailed:
+            case MojoFailed:
+            case ProjectFailed:
+                LOGGER.debug( "Some failure has occured." );
+                this.failure = true;
                 break;
 
             case ForkStarted:
-            case ForkFailed:
             case ForkSucceeded:
             case ForkedProjectStarted:
-            case ForkedProjectFailed:
             case ForkedProjectSucceeded:
             case MojoStarted:
-            case MojoFailed:
             case MojoSucceeded:
             case MojoSkipped:
             case ProjectStarted:
-            case ProjectFailed:
             case ProjectSucceeded:
             case ProjectSkipped:
                 break;
@@ -156,7 +168,7 @@ public class MavenDeployer
     private void sessionEnded( ExecutionEvent executionEvent )
     {
         logDeployerVersion();
-        
+
         LOGGER.info( "Installing artifacts..." );
         installProjects( executionEvent );
 
