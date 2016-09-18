@@ -34,7 +34,9 @@ import org.apache.maven.execution.ExecutionEvent.Type;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.shared.artifact.install.ArtifactInstallerException;
+import org.apache.maven.shared.project.NoFileAssignedException;
 import org.apache.maven.shared.project.deploy.ProjectDeployer;
 import org.apache.maven.shared.project.deploy.ProjectDeployerRequest;
 import org.apache.maven.shared.project.install.ProjectInstaller;
@@ -126,7 +128,7 @@ public class MavenDeployer
             case SessionEnded:
                 if ( this.failure )
                 {
-                    LOGGER.info( "The Maven Deployer Extension will not be called based on previous errors." );
+                    LOGGER.warn( "The Maven Deployer Extension will not be called based on previous errors." );
                 }
                 else
                 {
@@ -137,6 +139,7 @@ public class MavenDeployer
             case ForkedProjectFailed:
             case MojoFailed:
             case ProjectFailed:
+                //TODO: Can we find out more about the cause of failure?
                 LOGGER.debug( "Some failure has occured." );
                 this.failure = true;
                 break;
@@ -292,34 +295,63 @@ public class MavenDeployer
             ProjectDeployerRequest deployRequest =
                 new ProjectDeployerRequest().setProject( mavenProject ).setUpdateReleaseInfo( true );
 
-            projectDeployer.deployProject( executionEvent.getSession().getProjectBuildingRequest(), deployRequest,
-                                           repository );
+            deployProject( executionEvent.getSession().getProjectBuildingRequest(), deployRequest, repository );
         }
     }
 
     private void installProjects( ExecutionEvent exec )
     {
+        ArtifactRepository repository = exec.getSession().getLocalRepository();
+
+        List<MavenProject> sortedProjects = exec.getSession().getProjectDependencyGraph().getSortedProjects();
+        for ( MavenProject mavenProject : sortedProjects )
+        {
+            ProjectInstallerRequest pir =
+                new ProjectInstallerRequest().setProject( mavenProject ).setCreateChecksum( false ).setUpdateReleaseInfo( false );
+
+            installProject( exec.getSession().getProjectBuildingRequest(), pir, repository );
+        }
+
+    }
+
+    private void deployProject( ProjectBuildingRequest projectBuildingRequest, ProjectDeployerRequest deployRequest,
+                                ArtifactRepository repository )
+    {
+
         try
         {
-            ArtifactRepository repository = exec.getSession().getLocalRepository();
-
-            List<MavenProject> sortedProjects = exec.getSession().getProjectDependencyGraph().getSortedProjects();
-            for ( MavenProject mavenProject : sortedProjects )
-            {
-                ProjectInstallerRequest pir =
-                    new ProjectInstallerRequest().setProject( mavenProject ).setCreateChecksum( false ).setUpdateReleaseInfo( false );
-
-                projectInstaller.installProject( exec.getSession().getProjectBuildingRequest(), pir, repository );
-            }
-
+            projectDeployer.deployProject( projectBuildingRequest, deployRequest, repository );
         }
         catch ( IOException e )
         {
-            e.printStackTrace();
+            LOGGER.error( "IOException", e );
+        }
+        catch ( NoFileAssignedException e )
+        {
+            LOGGER.error( "NoFileAssignedException", e );
+        }
+
+    }
+
+    private void installProject( ProjectBuildingRequest pbr, ProjectInstallerRequest pir,
+                                 ArtifactRepository repository )
+    {
+        try
+        {
+            projectInstaller.installProject( pbr, pir, repository );
+        }
+        catch ( IOException e )
+        {
+            LOGGER.error( "IOException", e );
         }
         catch ( ArtifactInstallerException e )
         {
-            e.printStackTrace();
+            LOGGER.error( "ArtifactInstallerException", e );
+        }
+        catch ( NoFileAssignedException e )
+        {
+            LOGGER.error( "NoFileAssignedException", e );
         }
     }
+
 }
