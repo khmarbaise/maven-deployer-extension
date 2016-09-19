@@ -139,7 +139,7 @@ public class MavenDeployer
             case ForkedProjectFailed:
             case MojoFailed:
             case ProjectFailed:
-                //TODO: Can we find out more about the cause of failure?
+                // TODO: Can we find out more about the cause of failure?
                 LOGGER.debug( "Some failure has occured." );
                 this.failure = true;
                 break;
@@ -320,7 +320,7 @@ public class MavenDeployer
 
         try
         {
-            projectDeployer.deployProject( projectBuildingRequest, deployRequest, repository );
+            projectDeployer.deploy( projectBuildingRequest, deployRequest, repository );
         }
         catch ( IOException e )
         {
@@ -338,7 +338,7 @@ public class MavenDeployer
     {
         try
         {
-            projectInstaller.installProject( pbr, pir, repository );
+            projectInstaller.install( pbr, pir, repository );
         }
         catch ( IOException e )
         {
