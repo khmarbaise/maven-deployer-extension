@@ -305,7 +305,7 @@ public class MavenDeployer
         for ( MavenProject mavenProject : sortedProjects )
         {
             ProjectInstallerRequest pir =
-                new ProjectInstallerRequest().setProject( mavenProject ).setCreateChecksum( false ).setUpdateReleaseInfo( false );
+                new ProjectInstallerRequest().setProject( mavenProject ).setCreateChecksum( true ).setUpdateReleaseInfo( true );
 
             installProject( exec.getSession().getProjectBuildingRequest(), pir );
         }
