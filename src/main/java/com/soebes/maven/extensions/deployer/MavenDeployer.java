@@ -301,15 +301,13 @@ public class MavenDeployer
 
     private void installProjects( ExecutionEvent exec )
     {
-        ArtifactRepository repository = exec.getSession().getLocalRepository();
-
         List<MavenProject> sortedProjects = exec.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
         {
             ProjectInstallerRequest pir =
                 new ProjectInstallerRequest().setProject( mavenProject ).setCreateChecksum( false ).setUpdateReleaseInfo( false );
 
-            installProject( exec.getSession().getProjectBuildingRequest(), pir, repository );
+            installProject( exec.getSession().getProjectBuildingRequest(), pir );
         }
 
     }
@@ -333,12 +331,11 @@ public class MavenDeployer
 
     }
 
-    private void installProject( ProjectBuildingRequest pbr, ProjectInstallerRequest pir,
-                                 ArtifactRepository repository )
+    private void installProject( ProjectBuildingRequest pbr, ProjectInstallerRequest pir )
     {
         try
         {
-            projectInstaller.install( pbr, pir, repository );
+            projectInstaller.install( pbr, pir );
         }
         catch ( IOException e )
         {
