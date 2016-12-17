@@ -22,12 +22,11 @@ Overview
   <extension>
     <groupId>com.soebes.maven.extensions</groupId>
     <artifactId>maven-deployer-extension</artifactId>
-    <version>XXXXXX</version>
+    <version>0.1.0</version>
   </extension>
 </extensions>
 ```
 
- Not yet in Central. 
  
 License
 -------
@@ -38,7 +37,6 @@ Status
 ------
 
  * Experimental
- * Not in Central
 
 TODOs
 -----
