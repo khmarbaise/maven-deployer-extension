@@ -40,6 +40,7 @@ Status
 
 TODOs
 -----
-
+ 
+ * Add travis configuration.
  * Proof of Concept.
 
