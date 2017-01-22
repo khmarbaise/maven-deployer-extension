@@ -158,6 +158,7 @@
               <extraArtifacts>
                 <extraArtifact>com.beust:jcommander:1.48:jar</extraArtifact>
                 <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.5.2:jar</extraArtifact>
+                <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:2.6:jar</extraArtifact>
                 <extraArtifact>org.apache.maven:maven-model:3.1.1:jar</extraArtifact>
               </extraArtifacts>
             </configuration>
