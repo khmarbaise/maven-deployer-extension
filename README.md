@@ -22,7 +22,7 @@ Overview
   <extension>
     <groupId>com.soebes.maven.extensions</groupId>
     <artifactId>maven-deployer-extension</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
   </extension>
 </extensions>
 ```
@@ -37,10 +37,4 @@ Status
 ------
 
  * Experimental
-
-TODOs
------
- 
- * Add travis configuration.
- * Proof of Concept.
 
