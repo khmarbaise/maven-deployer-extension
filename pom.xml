@@ -31,6 +31,12 @@
     <url>https://github.com/khmarbaise/maven-deployer-extension/issues</url>
   </issueManagement>
 
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>scm:git:git@github.com:khmarbaise/maven-deployer-extension.git</url>
+    </site>
+  </distributionManagement>
   <scm>
     <developerConnection>scm:git:ssh://git@github.com/khmarbaise/maven-deployer-extension.git</developerConnection>
     <connection>scm:git:https://github.com/khmarbaise/maven-deployer-extension.git</connection>
