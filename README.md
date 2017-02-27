@@ -22,7 +22,7 @@ Overview
   <extension>
     <groupId>com.soebes.maven.extensions</groupId>
     <artifactId>maven-deployer-extension</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
   </extension>
 </extensions>
 ```
