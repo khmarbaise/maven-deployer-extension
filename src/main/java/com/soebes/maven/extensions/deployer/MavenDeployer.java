@@ -172,11 +172,13 @@ public class MavenDeployer
     {
         logDeployerVersion();
 
+        LOGGER.info( "" );
         LOGGER.info( "Installing artifacts..." );
         installProjects( executionEvent );
 
         if ( goalsContain( executionEvent, "deploy" ) )
         {
+            LOGGER.info( "" );
             LOGGER.info( "Deploying artifacts..." );
             deployProjects( executionEvent );
         }
