@@ -184,7 +184,7 @@ public class MavenDeployer
         }
         else
         {
-            LOGGER.info( " skipping." );
+            LOGGER.info( " Deployment has been skipped." );
         }
     }
 
