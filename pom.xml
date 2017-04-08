@@ -16,10 +16,6 @@
   <description>Deploy artifacts at the end of the Maven session which 
       solved deployAtEnd/installAtEnd configuration.</description>
 
-  <prerequisites>
-    <maven>3.0.5</maven>
-  </prerequisites>
-
   <properties>
     <smpp.component>maven-deployer-extension</smpp.component>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
