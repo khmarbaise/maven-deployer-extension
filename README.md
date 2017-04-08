@@ -10,8 +10,9 @@ Overview
 
  The idea of the extension is to handle  `installAtEnd` of the [maven-install-plugin]
  and the `deployAtEnd` of the [maven-deploy-plugin] correctly. The problem in the 
- [maven-deploy-plugin] is simply this will not work correctly if you use other plugins which
- define their own lifecycle (for example Eclipse Tycho etc.).
+ [maven-deploy-plugin] and/or [maven-install-plugin] is simply this will not work 
+ correctly if you use other plugins which define their own lifecycle (for example 
+ Eclipse Tycho etc.).
  
  If you like to use this extension in relationship with Maven 3.3.1+ you
  can define the following `.mvn/extensions.xml` file:
