@@ -322,9 +322,9 @@ public class MavenDeployer
         {
             projectDeployer.deploy( projectBuildingRequest, deployRequest, repository );
         }
-        catch ( IOException e )
+        catch ( IllegalArgumentException e )
         {
-            LOGGER.error( "IOException", e );
+            LOGGER.error( "IllegalArgumentException", e );
         }
         catch ( NoFileAssignedException e )
         {
