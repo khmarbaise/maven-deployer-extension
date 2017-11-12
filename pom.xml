@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.soebes.smpp</groupId>
     <artifactId>smpp-plugins</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
   </parent>
 
   <groupId>com.soebes.maven.extensions</groupId>
@@ -193,7 +193,7 @@
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-artifact-transfer</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
         <exclusions>
           <!--
             ! Needed to be excluded otherwise the extension will not work. 
