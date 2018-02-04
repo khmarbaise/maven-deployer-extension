@@ -35,6 +35,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.shared.artifact.deploy.ArtifactDeployerException;
 import org.apache.maven.shared.artifact.install.ArtifactInstallerException;
 import org.apache.maven.shared.project.NoFileAssignedException;
 import org.apache.maven.shared.project.deploy.ProjectDeployer;
@@ -329,6 +330,10 @@ public class MavenDeployer
         catch ( NoFileAssignedException e )
         {
             LOGGER.error( "NoFileAssignedException", e );
+        }
+        catch ( ArtifactDeployerException e )
+        {
+            LOGGER.error( "ArtifactDeployerException", e );
         }
 
     }
