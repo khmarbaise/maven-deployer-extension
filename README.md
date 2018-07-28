@@ -8,8 +8,8 @@ Maven Deployer Extension
 Overview
 --------
 
- The idea of the extension is to handle  `installAtEnd` of the [maven-install-plugin]
- and the `deployAtEnd` of the [maven-deploy-plugin] correctly. The problem in the 
+ The idea of the extension is to handle  `installAtEnd` of the [maven-install-plugin][maven-install-plugin]
+ and the `deployAtEnd` of the [maven-deploy-plugin][maven-deploy-plugin] correctly. The problem in the 
  [maven-deploy-plugin] and/or [maven-install-plugin] is simply this will not work 
  correctly if you use other plugins which define their own lifecycle (for example 
  Eclipse Tycho etc.).
@@ -27,8 +27,14 @@ Overview
   </extension>
 </extensions>
 ```
-
  
+Announcement
+------------
+
+Starting with release 0.3.0 the deployer extension will create no more checksum if you do
+`mvn install`. This will be done if you do a `mvn deploy`.
+  
+
 License
 -------
 [Apache License, Version 2.0, January 2004](http://www.apache.org/licenses/)
