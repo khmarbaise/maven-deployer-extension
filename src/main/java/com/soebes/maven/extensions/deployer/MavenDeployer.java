@@ -173,11 +173,12 @@ public class MavenDeployer
     {
         logDeployerVersion();
 
-        LOGGER.info( "" );
-        LOGGER.info( "Installing artifacts..." );
-        installProjects( executionEvent );
-
-        if ( goalsContain( executionEvent, "deploy" ) )
+        if ( goalsContain( executionEvent, "install" ) )
+        {
+            LOGGER.info( "" );
+            LOGGER.info( "Installing artifacts..." );
+            installProjects( executionEvent );
+        } else if ( goalsContain( executionEvent, "deploy" ) )
         {
             LOGGER.info( "" );
             LOGGER.info( "Deploying artifacts..." );
@@ -318,7 +319,6 @@ public class MavenDeployer
     private void deployProject( ProjectBuildingRequest projectBuildingRequest, ProjectDeployerRequest deployRequest,
                                 ArtifactRepository repository )
     {
-
         try
         {
             projectDeployer.deploy( projectBuildingRequest, deployRequest, repository );
