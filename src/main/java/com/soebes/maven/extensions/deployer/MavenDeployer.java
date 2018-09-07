@@ -175,11 +175,10 @@ public class MavenDeployer
 
         if ( goalsContain( executionEvent, "install" ) )
         {
-            LOGGER.info( "" );
-            LOGGER.info( "Installing artifacts..." );
-            installProjects( executionEvent );
+            installArtifacts( executionEvent );
         } else if ( goalsContain( executionEvent, "deploy" ) )
         {
+            installArtifacts( executionEvent );
             LOGGER.info( "" );
             LOGGER.info( "Deploying artifacts..." );
             deployProjects( executionEvent );
@@ -188,6 +187,13 @@ public class MavenDeployer
         {
             LOGGER.info( " Deployment has been skipped." );
         }
+    }
+
+    private void installArtifacts( ExecutionEvent executionEvent )
+    {
+        LOGGER.info( "" );
+        LOGGER.info( "Installing artifacts..." );
+        installProjects( executionEvent );
     }
 
     private void sessionStarted( ExecutionEvent executionEvent )
