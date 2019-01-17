@@ -10,7 +10,8 @@
 
   <groupId>com.soebes.maven.extensions</groupId>
   <artifactId>maven-deployer-extension</artifactId>
-  <version>0.3.1-SNAPSHOT</version>
+  <version>0.3.1-GAGGLE-SNAPSHOT</version>
+
 
   <name>The Maven Deployer Extension.</name>
   <description>Deploy artifacts at the end of the Maven session which 
@@ -55,9 +56,11 @@
       <artifactId>maven-core</artifactId>
       <!--
         ! We need at least 3.0.3 cause the AbstractEventSpy has been 
-        ! introduced in this version first. 
+        ! introduced in this version first.
+        !
+        ! Update:  working to resolve linkage error  MR
        -->
-      <version>3.0.3</version>
+      <version>3.3.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -114,7 +117,7 @@
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>gmaven-plugin</artifactId>
             <configuration>
-              <debug>false</debug>
+              <debug>true</debug>
               <verbose>true</verbose>
               <stacktrace>true</stacktrace>
               <defaultScriptExtension>.groovy</defaultScriptExtension>
