@@ -30,22 +30,12 @@ public class ArtifactRepositoryResolver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArtifactRepository.class);
 
-    public ArtifactRepository resolveArtifactRepository(ExecutionEvent executionEvent)
+    public ArtifactRepository resolveArtifactRepository(ExecutionEvent executionEvent, Properties props)
             throws MojoFailureException, MojoExecutionException {
 
-
-
-
-
-        Properties props = executionEvent.getSession().getRequest().getSystemProperties();
-        if (props == null) {
-            props = new Properties();
-        }
-        if (executionEvent.getSession().getRequest().getUserProperties() != null ) {
-            props.putAll(executionEvent.getSession().getRequest().getUserProperties());
-        }
-
-
+        //
+        // Manually pull in props.
+        //
         String altReleaseDeploymentRepository = props.getProperty(ALT_RELEASE_DEPLOYMENT_REPOSITORY);
         String altSnapshotDeploymentRepository = props.getProperty(ALT_SNAPSHOT_DEPLOYMENT_REPOSITORY);
         String altDeploymentRepository = props.getProperty(ALT_DEPLOYMENT_REPOSITORY);
@@ -69,6 +59,14 @@ public class ArtifactRepositoryResolver {
         return getDeploymentRepository(pdr);
     }
 
+    /**
+     * Code Researched from:  <a href="https://github.com/apache/maven-deploy-plugin/blob/maven-deploy-plugin-3.0.0-M1/src/main/java/org/apache/maven/plugins/deploy/DeployMojo.java>
+     *     MavenDeployMojo.java</a>
+     * @param pdr
+     * @return
+     * @throws MojoExecutionException
+     * @throws MojoFailureException
+     */
     protected ArtifactRepository getDeploymentRepository( ProjectDeployerRequest pdr )
 
             throws MojoExecutionException, MojoFailureException

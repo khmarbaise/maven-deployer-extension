@@ -67,8 +67,7 @@ public class MavenDeployer
     private ProjectInstaller projectInstaller;
 
 
-    public static final String SETTINGS_OFFLINE = "";
-    public static final String SETTINGS_SKIP = "";
+    public static final String SETTINGS_SKIP = "maven.deploy.skip";
 
     private boolean failure;
 
@@ -87,7 +86,6 @@ public class MavenDeployer
 
     private void logDeployerVersion()
     {
-        LOGGER.info( "" );
         LOGGER.info( " --- maven-deployer-extension:{} --- ", MavenDeployerExtensionVersion.getVersion() );
     }
 
@@ -95,17 +93,17 @@ public class MavenDeployer
     public void onEvent( Object event )
         throws Exception
     {
-        try
+        // We are only interested in the ExecutionEvent.
+        if ( event instanceof ExecutionEvent )
         {
-            // We are only interested in the ExecutionEvent.
-            if ( event instanceof ExecutionEvent )
-            {
+            try {
                 executionEventHandler( (ExecutionEvent) event );
+            } catch (Throwable e) {
+                LOGGER.error("Failure to deploy project",e);
+                ((ExecutionEvent) event).getSession().getResult().addException(e);
+
             }
-        }
-        catch ( Exception e )
-        {
-            LOGGER.error( "Exception", e );
+
         }
     }
 
@@ -167,7 +165,7 @@ public class MavenDeployer
                     LOGGER.error( "executionEventHandler: {}", type );
                     break;
             }
-        } catch (NoFileAssignedException|ArtifactInstallerException|IOException|ArtifactDeployerException|MojoFailureException|MojoExecutionException e) {
+        } catch (Exception e) {
             this.failure = true;
             throw e;
 
@@ -307,21 +305,26 @@ public class MavenDeployer
     private void deployProjects( ExecutionEvent executionEvent )
             throws NoFileAssignedException, ArtifactDeployerException, MojoFailureException, MojoExecutionException {
 
+
+        if (executionEvent.getSession().getSettings().isOffline()) {
+            throw new MojoFailureException("Cannot deploy in offline mode");
+        }
+
+        Properties executionProperties = buildProjectProperties(executionEvent);
+        if (Boolean.valueOf(executionProperties.getProperty(SETTINGS_SKIP))) {
+            LOGGER.info("Skipping deployment because {} was set to true.", SETTINGS_SKIP);
+            return;
+        }
+
+
         ArtifactRepositoryResolver repoResolver = new ArtifactRepositoryResolver();
-        ArtifactRepository repository = repoResolver.resolveArtifactRepository(executionEvent);
+        ArtifactRepository repository = repoResolver.resolveArtifactRepository(executionEvent, executionProperties);
 
         Properties projectProperties = executionEvent.getSession().getTopLevelProject().getProperties();
         boolean skip = Boolean.valueOf(projectProperties.getProperty(SETTINGS_SKIP, "false"));
         if (skip) {
             LOGGER.debug("Skipping deploy due to maven setting: {}", SETTINGS_SKIP);
             return;
-        }
-
-        boolean offline = Boolean.valueOf(projectProperties.getProperty(SETTINGS_OFFLINE, "false"));
-        if (offline) {
-            LOGGER.error("Cannot deploy if offline");
-
-            throw new IllegalStateException("Cannot deploy if offline");
         }
 
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
@@ -350,49 +353,33 @@ public class MavenDeployer
     private void deployProject( ProjectBuildingRequest projectBuildingRequest, ProjectDeployerRequest deployRequest,
                                 ArtifactRepository repository )
             throws NoFileAssignedException, ArtifactDeployerException {
-        try
-        {
-            projectDeployer.deploy( projectBuildingRequest, deployRequest, repository );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            LOGGER.error( "IllegalArgumentException", e );
-            throw e;
-        }
-        catch ( NoFileAssignedException e )
-        {
-            LOGGER.error( "NoFileAssignedException", e );
-            throw e;
-        }
-        catch ( ArtifactDeployerException e )
-        {
-            LOGGER.error( "ArtifactDeployerException", e );
-            throw e;
-        }
-
+        projectDeployer.deploy( projectBuildingRequest, deployRequest, repository );
     }
 
     private void installProject( ProjectBuildingRequest pbr, ProjectInstallerRequest pir )
             throws NoFileAssignedException, ArtifactInstallerException, IOException {
-        try
-        {
-            projectInstaller.install( pbr, pir );
-        }
-        catch ( IOException e )
-        {
-            LOGGER.error( "IOException", e );
-            throw e;
-        }
-        catch ( ArtifactInstallerException e )
-        {
-            LOGGER.error( "ArtifactInstallerException", e );
-            throw e;
-        }
-        catch ( NoFileAssignedException e )
-        {
-            LOGGER.error( "NoFileAssignedException", e );
-            throw e;
-        }
+        projectInstaller.install( pbr, pir );
     }
+
+
+    /**
+     * Loads the system properties and overwrites with any user properties (if they exist)
+     * @param executionEvent
+     * @return
+     */
+    protected Properties buildProjectProperties(final ExecutionEvent executionEvent) {
+        Properties props = executionEvent.getSession().getRequest().getSystemProperties();
+        if (props == null) {
+            props = new Properties();
+        }
+        if (executionEvent.getSession().getRequest().getUserProperties() != null ) {
+            props.putAll(executionEvent.getSession().getRequest().getUserProperties());
+        }
+
+
+        return props;
+
+    }
+
 
 }

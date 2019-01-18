@@ -12,7 +12,6 @@
   <artifactId>maven-deployer-extension</artifactId>
   <version>0.3.1-GAGGLE-SNAPSHOT</version>
 
-
   <name>The Maven Deployer Extension.</name>
   <description>Deploy artifacts at the end of the Maven session which 
       solved deployAtEnd/installAtEnd configuration.</description>
@@ -20,8 +19,8 @@
   <properties>
     <smpp.component>maven-deployer-extension</smpp.component>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <!-- Must be overwritten in every project. -->
@@ -58,7 +57,7 @@
         ! We need at least 3.0.3 cause the AbstractEventSpy has been 
         ! introduced in this version first.
         !
-        ! Update:  working to resolve linkage error  MR
+        ! Updated to 3.3.1 due ot linkage error -MR
        -->
       <version>3.3.1</version>
       <scope>provided</scope>
@@ -77,6 +76,30 @@
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-artifact-transfer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.3.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.3.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <version>2.21.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.21.0</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -106,18 +129,25 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.1</version>
+      </plugin>
     </plugins>
   </build>
   <profiles>
     <profile>
       <id>run-its</id>
+      <activation>
+        <!-- Things aren't invoking for me: MR -->
+        <activeByDefault>false</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>
             <groupId>org.codehaus.gmaven</groupId>
             <artifactId>gmaven-plugin</artifactId>
             <configuration>
-              <debug>true</debug>
               <verbose>true</verbose>
               <stacktrace>true</stacktrace>
               <defaultScriptExtension>.groovy</defaultScriptExtension>
@@ -164,11 +194,11 @@
                 <extraArtifact>com.beust:jcommander:1.48:jar</extraArtifact>
                 <extraArtifact>org.testng:testng:6.9.8:jar</extraArtifact>
                 <extraArtifact>org.assertj:assertj-core:2.1.0:jar</extraArtifact>
-                <extraArtifact>org.apache.maven.surefire:surefire-testng:2.19.1:jar</extraArtifact>
+                <extraArtifact>org.apache.maven.surefire:surefire-testng:2.22.1:jar</extraArtifact>
                 <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.5.2:maven-plugin</extraArtifact>
                 <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:3.0.0:maven-plugin</extraArtifact>
-                <extraArtifact>org.apache.maven.plugins:maven-failsafe-plugin:2.19.1:maven-plugin</extraArtifact>
-                <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.19.1:maven-plugin</extraArtifact>
+                <extraArtifact>org.apache.maven.plugins:maven-failsafe-plugin:2.22.1:maven-plugin</extraArtifact>
+                <extraArtifact>org.apache.maven.plugins:maven-surefire-plugin:2.22.1:maven-plugin</extraArtifact>
                 <extraArtifact>org.apache.maven.plugins:maven-deploy-plugin:2.8.2:maven-plugin</extraArtifact>
                 <extraArtifact>org.apache.maven:maven-model:3.1.1:jar</extraArtifact>
               </extraArtifacts>
