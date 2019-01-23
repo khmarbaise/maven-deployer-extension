@@ -3,7 +3,6 @@ package com.soebes.maven.extensions.deployer;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.inject.Named;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
@@ -17,7 +16,6 @@ import org.apache.maven.shared.transfer.project.deploy.ProjectDeployerRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Named
 public class ArtifactRepositoryResolver {
 
     public static final String ALT_DEPLOYMENT_REPOSITORY = "altDeploymentRepository";
