@@ -66,6 +66,9 @@ public class MavenDeployer
     @Inject
     private ProjectInstaller projectInstaller;
 
+
+    public static final String SETTINGS_SKIP = "maven.deploy.skip";
+
     private boolean failure;
 
     public MavenDeployer()
@@ -99,9 +102,10 @@ public class MavenDeployer
                 executionEventHandler( (ExecutionEvent) event );
             }
         }
-        catch ( Exception e )
+        catch ( Throwable e )
         {
-            LOGGER.error( "Exception", e );
+            LOGGER.error("Failure to deploy project",e);
+            ((ExecutionEvent) event).getSession().getResult().addException(e);
         }
     }
 
@@ -118,7 +122,8 @@ public class MavenDeployer
     }
 
     private void executionEventHandler( ExecutionEvent executionEvent )
-            throws NoFileAssignedException, ArtifactInstallerException, IOException, ArtifactDeployerException, MojoFailureException, MojoExecutionException {
+            throws NoFileAssignedException, ArtifactInstallerException, IOException, ArtifactDeployerException, MojoFailureException, MojoExecutionException
+    {
         try {
             Type type = executionEvent.getType();
             switch ( type )
@@ -163,7 +168,9 @@ public class MavenDeployer
                     LOGGER.error( "executionEventHandler: {}", type );
                     break;
             }
-        } catch (NoFileAssignedException|ArtifactInstallerException|IOException|ArtifactDeployerException|MojoFailureException|MojoExecutionException e) {
+        }
+        catch (Exception e)
+        {
             this.failure = true;
             throw e;
 
@@ -177,7 +184,8 @@ public class MavenDeployer
      * @param executionEvent
      */
     private void sessionEnded( ExecutionEvent executionEvent )
-            throws NoFileAssignedException, ArtifactInstallerException, IOException, ArtifactDeployerException, MojoFailureException, MojoExecutionException {
+            throws NoFileAssignedException, ArtifactInstallerException, IOException, ArtifactDeployerException, MojoFailureException, MojoExecutionException
+    {
         logDeployerVersion();
 
         if ( goalsContain( executionEvent, "install" ) )
@@ -307,6 +315,20 @@ public class MavenDeployer
         // pom file located.
         ArtifactRepository repository =
                 executionEvent.getSession().getTopLevelProject().getDistributionManagementArtifactRepository();
+
+        Properties projectProperties = executionEvent.getSession().getTopLevelProject().getProperties();
+        boolean skip = Boolean.valueOf(projectProperties.getProperty(SETTINGS_SKIP, "false"));
+        if (skip) {
+            LOGGER.debug("Skipping deploy due to maven setting: {}", SETTINGS_SKIP);
+            return;
+        }
+
+        boolean offline = Boolean.valueOf((executionEvent.getSession().getSettings().isOffline()));
+        if (offline) {
+            LOGGER.error("Cannot deploy if offline");
+
+            throw new IllegalStateException("Cannot deploy if offline");
+        }
 
         List<MavenProject> sortedProjects = executionEvent.getSession().getProjectDependencyGraph().getSortedProjects();
         for ( MavenProject mavenProject : sortedProjects )
