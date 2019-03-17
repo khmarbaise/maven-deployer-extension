@@ -1,7 +1,6 @@
 language: java
 sudo: false
 jdk:
-  - openjdk7
   - oraclejdk8
   - openjdk9
   - openjdk10
@@ -19,6 +18,7 @@ env:
   - MAVEN_VERSION=3.5.0
   - MAVEN_VERSION=3.5.3
   - MAVEN_VERSION=3.5.4
+  - MAVEN_VERSION=3.6.0
 
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
