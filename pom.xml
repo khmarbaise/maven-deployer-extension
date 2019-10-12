@@ -158,9 +158,9 @@
                 <pluginPropertyUsedForFiltering>localRepositoryPath</pluginPropertyUsedForFiltering>
               </filterProperties>
               <extraArtifacts>
-                <extraArtifact>com.beust:jcommander:1.48:jar</extraArtifact>
-                <extraArtifact>org.testng:testng:6.9.8:jar</extraArtifact>
-                <extraArtifact>org.assertj:assertj-core:2.1.0:jar</extraArtifact>
+                <extraArtifact>com.beust:jcommander:1.78:jar</extraArtifact>
+                <extraArtifact>org.testng:testng:7.0.0:jar</extraArtifact>
+                <extraArtifact>org.assertj:assertj-core:3.13.2:jar</extraArtifact>
                 <extraArtifact>org.apache.maven.surefire:surefire-testng:2.19.1:jar</extraArtifact>
                 <extraArtifact>org.apache.maven.plugins:maven-install-plugin:2.5.2:maven-plugin</extraArtifact>
                 <extraArtifact>org.apache.maven.plugins:maven-assembly-plugin:3.0.0:maven-plugin</extraArtifact>
