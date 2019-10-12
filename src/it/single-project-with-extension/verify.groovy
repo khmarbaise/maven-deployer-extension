@@ -7,6 +7,7 @@ int deactivationOfInstallPluginIndex  = 0
 int deployerExtensionIndex  = 0
 int installingArtifactIndex  = 0
 int deployingArtifactIndex  = 0
+int uploadingToSnapshotIndex = 0
 for(String line : lines ) {
     if(line.contains("org.apache.maven.plugins:maven-deploy-plugin:deploy has been deactivated.")) {
         deactivationOfDeployPluginIndex = lines.indexOf(line)
@@ -27,6 +28,10 @@ for(String line : lines ) {
     if(line.contains("Deploying artifacts...")) {
         deployingArtifactIndex = lines.indexOf(line)
     }
+
+    if(line.contains("Uploading to snapshots:")) {
+        uploadingToSnapshotIndex = lines.indexOf(line)
+    }
 }
 
 assert deactivationOfDeployPluginIndex != 0
@@ -34,3 +39,4 @@ assert deactivationOfInstallPluginIndex != 0
 assert deployerExtensionIndex != 0
 assert installingArtifactIndex != 0 && installingArtifactIndex > deployerExtensionIndex
 assert deployingArtifactIndex !=0 && deployingArtifactIndex > deployerExtensionIndex
+assert uploadingToSnapshotIndex != 0
