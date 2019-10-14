@@ -1,9 +1,8 @@
 language: java
 jdk:
   - openjdk8
-  - openjdk9
-  - openjdk10
   - openjdk11
+  - openjdk13
 cache:
   directories:
   - $HOME/.m2/repository
@@ -18,6 +17,8 @@ env:
   - MAVEN_VERSION=3.5.3
   - MAVEN_VERSION=3.5.4
   - MAVEN_VERSION=3.6.0
+  - MAVEN_VERSION=3.6.1
+  - MAVEN_VERSION=3.6.2
 
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
