@@ -31,7 +31,7 @@ for(String line : lines ) {
         deployingArtifactIndex = lines.indexOf(line)
     }
 
-    if(line.contains("Uploading to release:")) {
+    if(line.contains("Uploading to release:") || line.contains("Uploading:")) { // second part is neccessary for Maven version < 3.5.0
         uploadingToReleaseIndex = lines.indexOf(line)
     }
 

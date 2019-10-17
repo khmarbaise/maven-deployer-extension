@@ -31,7 +31,7 @@ for(String line : lines ) {
         deployingArtifactIndex = lines.indexOf(line)
     }
 
-    if(line.contains("Uploading to snapshots:")) {
+    if(line.contains("Uploading to snapshots:") || line.contains("Uploading:")) { // second part is neccessary for Maven version < 3.5.0
         uploadingToSnapshotIndex = lines.indexOf(line)
     }
 
