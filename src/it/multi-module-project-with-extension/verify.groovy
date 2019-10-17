@@ -32,7 +32,7 @@ for(String line : lines ) {
         deployingArtifactIndex = lines.indexOf(line)
     }
 
-    if(line.contains("Uploading to snapshots:")|| line.contains("Uploading:")) { // second part is neccessary for Maven version < 3.5.0
+    if(line.contains("Uploading to snapshots:") || line.contains("Uploading:")) { // second part is neccessary for Maven version < 3.5.0
         uploadingToSnapshotIndex = lines.indexOf(line)
     }
 
@@ -44,7 +44,7 @@ for(String line : lines ) {
         deployPluginIndex = lines.indexOf(line)
     }
 
-    if(line.contains("< com.soebes.maven.extensions.test:m1.5 >")) {
+    if(line.contains("< com.soebes.maven.extensions.test:m1.5 >") || line.contains("Building ModuleTest :: M1 :: M1.5 1.0.0-SNAPSHOT")) { // second check is necessary for Maven Version 3.5.0
         lastModuleIndex = lines.indexOf(line)
     }
 }
