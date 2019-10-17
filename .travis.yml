@@ -23,5 +23,7 @@ env:
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
 
+before_script:
+	- "printenv"
 script:
   - "./mvnw --show-version --errors --batch-mode -Prun-its clean verify"
