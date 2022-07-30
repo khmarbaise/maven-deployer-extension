@@ -13,7 +13,7 @@
   <packaging>pom</packaging>
 
   <name>Extensions Integration Test</name>
-  <url>http://www.soebes.de</url>
+  <url>https://www.soebes.io</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.soebes.smpp</groupId>
     <artifactId>smpp-plugins</artifactId>
-    <version>4.1.1</version>
+    <version>5.3.10</version>
   </parent>
 
   <groupId>com.soebes.maven.extensions</groupId>
@@ -19,8 +19,7 @@
   <properties>
     <smpp.component>maven-deployer-extension</smpp.component>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.release>7</maven.compiler.release>
   </properties>
 
   <!-- Must be overwritten in every project. -->
