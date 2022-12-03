@@ -141,7 +141,7 @@ public class MavenDeployer
             case MojoFailed:
             case ProjectFailed:
                 // TODO: Can we find out more about the cause of failure?
-                LOGGER.debug( "Some failure has occured." );
+                LOGGER.debug( "Some failure has occurred." );
                 this.failure = true;
                 break;
 

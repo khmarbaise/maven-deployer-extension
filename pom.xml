@@ -19,7 +19,7 @@
   <properties>
     <smpp.component>maven-deployer-extension</smpp.component>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-    <maven.compiler.release>7</maven.compiler.release>
+    <maven.compiler.release>8</maven.compiler.release>
   </properties>
 
   <!-- Must be overwritten in every project. -->
@@ -52,11 +52,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <!--
-        ! We need at least 3.0.3 cause the AbstractEventSpy has been
-        ! introduced in this version first.
-       -->
-      <version>3.0.3</version>
+      <version>3.2.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -194,7 +190,7 @@
       <dependency>
         <groupId>org.apache.maven.shared</groupId>
         <artifactId>maven-artifact-transfer</artifactId>
-        <version>0.11.0</version>
+        <version>0.13.1</version>
         <exclusions>
           <!--
             ! Needed to be excluded otherwise the extension will not work.
